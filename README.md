@@ -107,9 +107,6 @@ to match. The hearts stay red and the maps keep their own colors.
 - **Notifications:** they appear as RPG dialog boxes, with the agent's hero speaking.
 - **Tabs and panes:** tabs are quest plates, and each terminal header shows its hero and status.
 - **Sounds:** a fanfare when an agent finishes, an alert when one needs you, and a jingle on level up.
-- **Colors:** Ctrl+Shift+G opens a theme picker with Wood (the default), Forest, Tokyo Night,
-  Catppuccin, Dracula, Gruvbox, Nord and Rosé Pine. The wood frames, cards and panels take the colors
-  of the chosen palette.
 
 ## Install
 
