@@ -7,7 +7,7 @@ import { v_flex, h_flex, InputState, Input, ScrollHandle } from "gpui-base";
 import { ROSTER } from "./roster.js";
 import { wslArgv, wslDir } from "./wsl.js";
 import {
-  commands, layouts, keys, run, theme, props, closeOverlay, openOverlay, shared, setShared, focused, agents, layout,
+  commands, layouts, keys, run, theme, props, closeOverlay, openOverlay, shared, setShared, focused, agents, layout, window as win,
 } from "herdr";
 
 const PX = "PxPlus IBM VGA 8x16";
@@ -44,6 +44,9 @@ const focusedAgent = () => {
 };
 const setHeroes = (fn) => setShared("guildhall.heroes", fn({ ...(shared("guildhall.heroes") ?? {}) }));
 const setXp = (fn) => setShared("guildhall.xp", fn({ ...(shared("guildhall.xp") ?? {}) }));
+
+// The HUD's MIN button: shared "guildhall.minButton"; unset, on except on Linux (as guildhall-hud).
+const minShown = () => { const v = shared("guildhall.minButton"); return typeof v === "boolean" ? v : win()?.platform !== "linux"; };
 
 // The theme's commands: { group, title, words, icon, act, when? }.
 function guildhall() {
@@ -92,6 +95,8 @@ function guildhall() {
       act: () => run("tab.new", { name: "Hero (WSL)", argv: wslArgv(wslDir(shared, focused()?.space), "claude") }) },
     { group: "Guildhall: Window", bind: "mod.open:guildhall-themes", icon: "OrbLight", title: "Change the theme colors…", words: "color palette wood forest tokyo catppuccin dracula gruvbox nord rose pine look",
       act: () => openOverlay({ mod: "guildhall-themes", kind: "dialog", width: 560, height: 430 }) },
+    { group: "Guildhall: Window", icon: "Downgrade", title: minShown() ? "Hide the minimize button" : "Show the minimize button", words: "min minimize window hud button",
+      act: () => setShared("guildhall.minButton", !minShown()) },
     { group: "Guildhall: Window", bind: "layout.toggle:hud", icon: "Vision", title: shown("hud") ? "Hide the HUD" : "Show the HUD", words: "top bar hearts life session",
       act: () => run("layout.toggle", { id: "hud" }) },
   ];

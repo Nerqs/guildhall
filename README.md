@@ -15,7 +15,7 @@ on a map, and a wood-framed HUD shows your Claude limits as hearts and a session
 - **SESSION:** a bar for the **5-hour** limit, with the time it resets.
 - **Town sign:** sits in the middle of the window and shows the space and the current tab ("chapter").
 - **Clock:** the sun or the moon, with the time. The wood darkens at night.
-- **Buttons:** NEW (new tab), SPLIT and SEARCH.
+- **Buttons:** NEW (new tab), SPLIT, SEARCH and MIN (minimize Herdr). MIN can be turned off from the palette ("Hide the minimize button"). It starts hidden on Linux, where many window managers can't minimize.
 
 ## The party
 

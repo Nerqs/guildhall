@@ -115,3 +115,4 @@ Art, sounds and the NinjaAdventure font: Ninja Adventure Asset Pack by pixel-boy
 - **On a tab** (`guildhall-tabs`): `tab.close {id}`. It is not confirmed, so Herdr asks first when the tab is its space's last.
 - **On a MAP place** (`guildhall-spaces`): `space.close {id}`. It is not confirmed, so Herdr asks first, as it does from the menu.
 - **On a PARTY card or the rail** (`guildhall-agents`): dismisses the hero with `pane.close {pane}`, which ends its terminal. A working, blocked or erroring hero first opens Herdr's `confirm` dialog ({ title, detail, command }); an idle one closes at once.
+- **MIN button:** a fourth HUD wood button (pack icon `Downgrade`) runs `window.minimize`. It shows when shared `guildhall.minButton` is true, or when that is unset and `window().platform` is not linux. The palette's "Show/Hide the minimize button" toggles it.

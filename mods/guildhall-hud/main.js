@@ -6,7 +6,7 @@
 import { View, div, image } from "gpui-kit";
 import { wslArgv, wslDir } from "./wsl.js";
 import { v_flex, h_flex } from "gpui-base";
-import { agents, spaces, focused, run, theme, themes, shared, setShared, layout, openOverlay, nextCommand } from "herdr";
+import { agents, spaces, focused, run, theme, themes, shared, setShared, layout, openOverlay, nextCommand, window as win } from "herdr";
 
 const PX = "PxPlus IBM VGA 8x16";
 // The Ninja Adventure pack font (CC0) has no space glyph: only for one-word titles.
@@ -161,6 +161,13 @@ function newTab(wsl) {
   else run("tab.new", {});
 }
 
+// The MIN button (minimizes Herdr) can be turned off from the palette: shared "guildhall.minButton".
+// Unset, it shows on Windows and macOS and hides on Linux, where many window managers can't minimize.
+function minButtonShown() {
+  const v = shared("guildhall.minButton");
+  return typeof v === "boolean" ? v : win()?.platform !== "linux";
+}
+
 // Forget WSL spaces that were closed (shared "guildhall.wsl" = { spaceId: dir }).
 function pruneWsl() {
   const map = shared("guildhall.wsl") ?? {};
@@ -248,7 +255,8 @@ export default class Hud extends View {
       .child(clock)
       .child(woodButton(this, "btn-new", "Scroll", "NEW", () => newTab(false)))
       .child(woodButton(this, "btn-split", "Guard", "SPLIT", () => run("pane.split", { direction: "right" })))
-      .child(woodButton(this, "btn-find", "Vision", "SEARCH", () => run("mod.open", { name: "picker" })));
+      .child(woodButton(this, "btn-find", "Vision", "SEARCH", () => run("mod.open", { name: "picker" })))
+      .when(minButtonShown(), (el) => el.child(woodButton(this, "btn-min", "Downgrade", "MIN", () => run("window.minimize"))));
 
     // The sign sits at the window's center, not between the side blocks (they differ in width).
     const signLeft = Math.max(0, Math.round((this.width - SIGN_W) / 2));
