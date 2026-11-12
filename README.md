@@ -1,29 +1,101 @@
 # Guildhall
 
-A pixel-art adventurers' guild for [Herdr](https://herdr.dev). Your coding agents are a party of
-heroes: each one gets a hero card with its own scene, stamina and level, the tabs are quests, the
-spaces are places on a map, and a wood-framed HUD shows your Claude limits as hearts and a session bar.
+A pixel-art adventurers' guild for [Herdr](https://herdr.dev). Your coding agents become a party of
+heroes. Each hero has a card with its own scene, stamina and level. Tabs are quests, spaces are places
+on a map, and a wood-framed HUD shows your Claude limits as hearts and a session bar.
 
 ![Guildhall](preview.png)
 
-## What's inside
+## The HUD
 
-- **HUD:** LIFE hearts for the weekly Claude limit (a quarter heart per 2.5%), a SESSION bar for the
-  5-hour limit, a centered town sign with the space and tab, a day/night clock, and wood buttons
-  (New tab, Split, Search).
-![The party](party.png)
+![The HUD](docs/hud.png)
 
-- **Party:** a hero card per agent. It shows the hero in a scene, a status bubble (on a quest, needs
-  you, quest done, resting), a STAMINA bar (the context left in that Claude session), and the
-  hero's level. Click the portrait to pick another of 88 heroes.
-- **Levels:** heroes earn 1 XP per finished task. Level N needs N tasks to reach N+1, up to level 100.
-  Each hero keeps its own level.
-- **Map, quests and tabs:** spaces show as places on a map, and tabs as quest plates with the hero's
-  portrait. A quest board panel lists each tab's quests.
-- **Overworld:** an optional strip at the bottom (Ctrl+Shift+J) where heroes walk, wait, cheer or
-  rest. It has four maps: village, camp, snowfield and shrine.
-- **Notifications:** RPG dialog boxes where the agent's hero speaks.
-- **Command palette:** Ctrl+Shift+P opens the theme's commands first, with their keys, then Herdr's.
+- **LIFE:** 10 hearts show the Claude **weekly** limit you have left. Each heart is 10% and each
+  quarter is 2.5%, rounded up, so the hearts only empty at 0%. With one heart or less left, it blinks.
+- **SESSION:** a bar for the **5-hour** limit, with the time it resets.
+- **Town sign:** sits in the middle of the window and shows the space and the current tab ("chapter").
+- **Clock:** the sun or the moon, with the time. The wood darkens at night.
+- **Buttons:** NEW (new tab), SPLIT and SEARCH.
+
+## The party
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+![The party](docs/party.png)
+
+</td>
+<td width="50%" valign="top">
+
+Every agent is a hero with a card:
+
+- **A scene** with the hero, posed by status: walking while it works, arms up when it needs you or
+  is done, standing at rest. A speech bubble shows the status too.
+- **A status plate** for each state: ON A QUEST, NEEDS YOU, QUEST DONE or RESTING.
+- **STAMINA:** the context left in that Claude session. It drains as the chat grows and refills
+  after `/compact`.
+- **A level:** heroes earn 1 XP for every answer they finish. Level N needs N more to reach N+1
+  (1, 2, 3, …), up to level 100. A jingle plays on every level up, and each hero keeps its own level.
+- **88 heroes:** click the small portrait to pick another one, or use Ctrl+Shift+H.
+
+The **MAP** above the party lists your spaces as places, each marked with an icon.
+
+</td>
+</tr>
+</table>
+
+## Quests
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+Open the **Quests** board from the tab bar or with Ctrl+Shift+Q.
+
+- Write a quest and, if you like, **details for the hero**: what to do, which files, when it counts
+  as done.
+- **Send hero** opens a new tab named after the quest. An agent starts there with the quest as its
+  first message.
+- The quest then shows the hero working on it and its status. Click the hero to jump there.
+- When the hero finishes, the quest ticks itself. You can also tick a quest by hand.
+
+Each space has its own board, so a quest stays in view after its tab opens.
+
+</td>
+<td width="50%" valign="top">
+
+![The quest board](docs/quests.png)
+
+</td>
+</tr>
+</table>
+
+## Commands and keys
+
+![The command palette](docs/palette.png)
+
+**Ctrl+Shift+P** opens the Guildhall palette. The theme's commands come first, with their keys, and
+Herdr's own commands follow. Type to filter, then press Enter to run one.
+
+| Key | Command |
+|---|---|
+| Ctrl+Shift+P | Guildhall command palette |
+| Ctrl+Shift+Q | Show or hide the quest board |
+| Ctrl+Shift+H | Change this agent's hero |
+| Ctrl+Shift+U | Go to the next agent that needs you |
+| Ctrl+Shift+J | Show or hide the overworld map |
+| Ctrl+Shift+M | Next map |
+| Ctrl+Shift+Y | Show or hide the HUD |
+| Ctrl+Shift+B | Show or hide the side bar |
+
+## More
+
+- **Overworld:** an optional strip at the bottom of the window where heroes walk the road, wait at
+  a door, cheer by a chest or rest by the campfire. There are four maps: village, camp, snowfield
+  and shrine.
+- **Notifications:** they appear as RPG dialog boxes, with the agent's hero speaking.
+- **Tabs and panes:** tabs are quest plates, and each terminal header shows its hero and status.
 - **Sounds:** a fanfare when an agent finishes, an alert when one needs you, and a jingle on level up.
 
 ## Install
@@ -32,27 +104,28 @@ Ask your agent to add this layout from `herdr.dev/layouts`, or copy `layouts/`, 
 into `~/.config/herdr-app/`. Then merge `keys.json` into yours and run
 `herdr-app do layout.switch '{"name":"guildhall"}'`.
 
-The STAMINA and SESSION bars and the LIFE hearts need the Claude Code status line in `extras/`. See
-`extras/README.md`, which also shows how to turn on the sounds.
+The LIFE hearts and the SESSION and STAMINA bars read Claude's limits through a Claude Code status
+line, which lives in `extras/`. `extras/README.md` shows how to set it up and how to turn on the
+sounds.
 
 `RECIPE.md` describes the whole build in detail.
 
 ## Credits
 
 - **Art, sounds and the NinjaAdventure font:** [Ninja Adventure Asset Pack](https://pixel-boy.itch.io/ninja-adventure-asset-pack)
-  by **pixel-boy** and **AAA**. It is released under CC0 (public domain) and credit is not
-  required. Thank you for this wonderful pack. The heroes, portraits, tilesets, wood UI, emotes,
-  icons, hearts, flags, chests, fire, the pixel font and the sounds all come from it. Its license
-  is included next to the files that use it.
+  by **pixel-boy** and **AAA**. It is released under CC0 (public domain), so credit is not
+  required, but thank you for this wonderful pack. Everything below comes from it: the heroes,
+  portraits, tilesets, wood UI, emotes, icons, hearts, flags, chests, fire, the pixel font and the
+  sounds. Its license is included next to the files that use it.
 - **PxPlus IBM VGA 8x16 font:** by **VileR** ([The Ultimate Oldschool PC Font Pack](https://int10h.org/oldschool-pc-fonts/)),
   under CC BY-SA 4.0. See `mods/guildhall-hud/fonts/LICENSE-PxPlus.txt`.
-- **Inspiration:** [Pixelherd](https://github.com/jzetterman/herdr-pixelherd) by jzetterman (square
-  hero cards) and [World of Codecraft](https://github.com/kevinpardo/world-of-codecraft) by Kevin
-  Pardo (heroes that live in a world). No code was copied from either.
+- **Inspiration:** [Pixelherd](https://github.com/jzetterman/herdr-pixelherd) by jzetterman, for
+  the square hero cards, and [World of Codecraft](https://github.com/kevinpardo/world-of-codecraft)
+  by Kevin Pardo, for heroes that live in a world. No code was copied from either.
 - **Herdr's own mods:** `guildhall-tabs`, `guildhall-spaces`, `guildhall-pane`, `guildhall-status`
   and `guildhall-agents` began as `mod.clone` copies of Herdr's shipped mods.
 
 ## License
 
-The layout, theme and mod code are MIT (see `LICENSE`). The Ninja Adventure assets stay CC0 and the
-PxPlus font stays CC BY-SA 4.0.
+The layout, theme and mod code are MIT (see `LICENSE`). The Ninja Adventure assets stay CC0, and
+the PxPlus font stays CC BY-SA 4.0.

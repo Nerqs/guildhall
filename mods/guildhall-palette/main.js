@@ -52,10 +52,11 @@ function guildhall() {
         if (questsOpen()) run("layout.hide", { id: "panel" });
         else { run("layout.select", { stack: "panel-body", child: "quests" }); run("layout.show", { id: "panel" }); }
       } },
-    { group: "Guildhall: Quests", icon: "Repair", title: "Clear finished quests in this tab", words: "tasks done remove",
+    { group: "Guildhall: Quests", icon: "Repair", title: "Clear finished quests in this space", words: "tasks done remove",
       act: () => {
-        const tab = focused()?.tab; const all = { ...(shared("guildhall.quests") ?? {}) };
-        if (tab && all[tab]) { all[tab] = all[tab].filter((q) => !q.done); if (!all[tab].length) delete all[tab]; setShared("guildhall.quests", all); }
+        // Quest boards are per space (guildhall-quests).
+        const sp = focused()?.space; const all = { ...(shared("guildhall.quests") ?? {}) };
+        if (sp && all[sp]) { all[sp] = all[sp].filter((q) => !q.done); if (!all[sp].length) delete all[sp]; setShared("guildhall.quests", all); }
       } },
 
     { group: "Guildhall: Heroes", bind: "guildhall-hud.pick-hero", icon: "Interact", title: "Change this agent's hero…", words: "pick choose avatar character", when: agent,
