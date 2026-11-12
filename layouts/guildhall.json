@@ -1,0 +1,236 @@
+{
+  "id": "root",
+  "type": "column",
+  "children": [
+    {
+      "id": "hud",
+      "type": "block",
+      "content": {
+        "mod": "guildhall-hud"
+      },
+      "size": {
+        "px": 68
+      },
+      "window_drag": true
+    },
+    {
+      "id": "world",
+      "type": "row",
+      "children": [
+        {
+          "id": "sidebar",
+          "type": "column",
+          "children": [
+            {
+              "id": "spaces",
+              "type": "block",
+              "content": {
+                "mod": "guildhall-spaces"
+              },
+              "size": {
+                "weight": 2
+              },
+              "min": 90
+            },
+            {
+              "id": "agents",
+              "type": "block",
+              "content": {
+                "mod": "guildhall-agents"
+              },
+              "size": {
+                "weight": 3
+              },
+              "min": 120
+            },
+            {
+              "id": "sidebar-footer",
+              "type": "block",
+              "content": {
+                "mod": "workspace-chrome",
+                "props": {
+                  "footer": true
+                }
+              },
+              "size": {
+                "px": 69
+              }
+            }
+          ],
+          "size": {
+            "px": 280
+          },
+          "min": 44,
+          "max": 480,
+          "background": "chrome",
+          "border": {
+            "width": 2,
+            "color": "border"
+          },
+          "radius": 3,
+          "shadow": "md"
+        },
+        {
+          "id": "work",
+          "type": "column",
+          "children": [
+            {
+              "id": "tabs",
+              "type": "block",
+              "content": {
+                "mod": "guildhall-tabs"
+              },
+              "size": {
+                "px": 40
+              },
+              "background": "chrome",
+              "border": {
+                "width": 2,
+                "color": "border"
+              },
+              "radius": 3
+            },
+            {
+              "id": "work-body",
+              "type": "row",
+              "children": [
+                {
+                  "id": "main",
+                  "type": "block",
+                  "content": {
+                    "tab": "active",
+                    "pane": {
+                      "header": {
+                        "content": {
+                          "mod": "guildhall-pane"
+                        },
+                        "reveal": "always",
+                        "height": 32,
+                        "position": "top"
+                      },
+                      "background": "background",
+                      "shadow": "md",
+                      "border": {
+                        "width": 2,
+                        "color": "border"
+                      },
+                      "focus": {
+                        "width": 3,
+                        "color": "accent"
+                      },
+                      "radius": 3,
+                      "gap": 12,
+                      "lone": true
+                    }
+                  }
+                },
+                {
+                  "id": "panel",
+                  "type": "column",
+                  "children": [
+                    {
+                      "id": "panel-body",
+                      "type": "stack",
+                      "children": [
+                        {
+                          "id": "files",
+                          "type": "block",
+                          "content": {
+                            "mod": "files"
+                          }
+                        },
+                        {
+                          "id": "changes",
+                          "type": "block",
+                          "content": {
+                            "mod": "changes"
+                          }
+                        },
+                        {
+                          "id": "quests",
+                          "type": "block",
+                          "content": {
+                            "mod": "guildhall-quests"
+                          }
+                        }
+                      ],
+                      "active": "files"
+                    }
+                  ],
+                  "size": {
+                    "px": 368
+                  },
+                  "min": 280,
+                  "max": 900,
+                  "hidden": true,
+                  "border": {
+                    "width": 2,
+                    "color": "border"
+                  },
+                  "radius": 3
+                }
+              ],
+              "gap": 12
+            },
+            {
+              "id": "overworld",
+              "type": "block",
+              "size": {
+                "px": 118
+              },
+              "border": {
+                "width": 2,
+                "color": "border"
+              },
+              "radius": 3,
+              "content": {
+                "mod": "guildhall-world"
+              }
+            },
+            {
+              "id": "status",
+              "type": "block",
+              "content": {
+                "mod": "guildhall-status"
+              },
+              "size": {
+                "px": 28
+              },
+              "background": "chrome",
+              "border": {
+                "width": 2,
+                "color": "border"
+              },
+              "radius": 3
+            }
+          ],
+          "gap": 10,
+          "resizable": false
+        }
+      ],
+      "padding": 12,
+      "gap": 12,
+      "resizable": false
+    }
+  ],
+  "background": {
+    "image": "mods/guildhall-hud/ui/backdrop.png",
+    "fit": "cover"
+  },
+  "theme": "guildhall",
+  "font": "JetBrains Mono",
+  "font_size": 15,
+  "ui_font": "PxPlus IBM VGA 8x16",
+  "terminal_padding": [
+    16,
+    20
+  ],
+  "terminal_opacity": 0.8600000143051147,
+  "titlebar": "none",
+  "traffic_lights": [
+    12,
+    26
+  ],
+  "preview": "layouts/guildhall.svg",
+  "toast": "guildhall-toast"
+}
