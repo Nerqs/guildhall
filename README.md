@@ -90,6 +90,15 @@ Herdr's own commands follow. Type to filter, then press Enter to run one.
 | Ctrl+Shift+B | Show or hide the side bar |
 | Ctrl+Shift+G | Pick the theme colors |
 
+## Colors
+
+![The theme picker](docs/colors.png)
+
+Press **Ctrl+Shift+G**, or pick "Change the theme colors…" in the palette, to choose the guild's
+colors: Wood (the default), Forest, Tokyo Night, Catppuccin, Dracula, Gruvbox, Nord or Rosé Pine.
+The frames, cards and panels take the palette's colors, and the sign and the buttons are recolored
+to match. The hearts stay red and the maps keep their own colors.
+
 ## More
 
 - **Overworld:** an optional strip at the bottom of the window where heroes walk the road, wait at
