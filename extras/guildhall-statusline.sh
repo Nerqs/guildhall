@@ -12,10 +12,11 @@ num() { printf '%s' "$2" | grep -o "\"$1\":[ ]*[0-9.]*" | head -1 | sed 's/.*:[ 
 # The {...} object after "key": (no nested objects inside the ones we read).
 obj() { printf '%s' "$2" | grep -o "\"$1\":[ ]*{[^}]*}" | head -1; }
 
-ctx=$(obj context_window "$json")
 five=$(obj five_hour "$json")
 week=$(obj seven_day "$json")
-context_left=$(num remaining_percentage "$ctx")
+# remaining_percentage only exists in context_window: read it from the whole payload (the
+# context_window object holds a nested current_usage object, which a flat match would cut).
+context_left=$(num remaining_percentage "$json")
 session_used=$(num used_percentage "$five")
 resets_at=$(num resets_at "$five")
 week_used=$(num used_percentage "$week")

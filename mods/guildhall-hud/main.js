@@ -161,6 +161,14 @@ function newTab(wsl) {
   else run("tab.new", {});
 }
 
+// Forget WSL spaces that were closed (shared "guildhall.wsl" = { spaceId: dir }).
+function pruneWsl() {
+  const map = shared("guildhall.wsl") ?? {};
+  const live = new Set(spaces().map((s) => s.id));
+  const keep = Object.fromEntries(Object.entries(map).filter(([id]) => live.has(id)));
+  if (Object.keys(keep).length !== Object.keys(map).length) setShared("guildhall.wsl", keep);
+}
+
 function hudCommand(c) {
   if (c === "wsl-tab") { newTab(true); return; }
   if (c === "next-map") {
@@ -188,7 +196,8 @@ export default class Hud extends View {
     this.width = 0; this.hovered = null; this.pressed = null;
     this.now = new Date();
     // Day and night follow the clock: check once a minute.
-    cx.timer.every(60000, (cx) => { this.now = new Date(); cx.notify(); });
+    cx.timer.every(60000, (cx) => { this.now = new Date(); pruneWsl(); cx.notify(); });
+    pruneWsl();
     // Keyboard commands for the theme (keys.json "layout:guildhall": "guildhall-hud.<command>").
     // The HUD answers them because it is always shown; the palette lists the same keys.
     cx.spawn(async (cx) => {

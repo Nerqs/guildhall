@@ -10,6 +10,21 @@ export function wslArgv(dir, command) {
   return ["cmd.exe", "/c", `set WSLENV=HC_TERMINAL_ID/u&& wsl.exe ${cd}${run}`];
 }
 
+// A Windows path as WSL sees it: C:\Users\me\x -> /mnt/c/Users/me/x.
+export function toWslPath(p) {
+  const m = /^([A-Za-z]):[\\/](.*)$/.exec(p ?? "");
+  return m ? `/mnt/${m[1].toLowerCase()}/${m[2].replace(/\\/g, "/")}` : p;
+}
+
+// Claude Code in WSL with a quest as its first message. The quest is in a file (questFile, a
+// Windows path) that guildhall-wsl/hero.sh reads: a task passed on the command line would be
+// appended by Herdr and break the quoting. appHome: herdr's appHome().
+export function wslHeroArgv(dir, questFile, appHome) {
+  const hero = toWslPath(`${appHome}/mods/guildhall-wsl/hero.sh`);
+  const file = questFile ? ` "${toWslPath(questFile)}"` : "";
+  return ["cmd.exe", "/c", `set WSLENV=HC_TERMINAL_ID/u&& wsl.exe --cd "${dir || "~"}" -e bash -li "${hero}"${file}`];
+}
+
 // The WSL folder of a space opened as a WSL project, or null for a Windows space.
 export function wslDir(shared, spaceId) {
   return (shared("guildhall.wsl") ?? {})[spaceId] ?? null;

@@ -9,8 +9,8 @@
 
 import { View, div, image } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
-import { focused, spaces, agents, shared, setShared, theme, run } from "herdr";
-import { wslArgv, wslDir } from "./wsl.js";
+import { focused, spaces, agents, shared, setShared, theme, run, appHome, writeTextFile } from "herdr";
+import { wslHeroArgv, wslDir } from "./wsl.js";
 
 const PX = "PxPlus IBM VGA 8x16";
 const TITLE = "NinjaAdventure";
@@ -120,15 +120,26 @@ export default class Quests extends View {
   }
 
   // Opens a tab named after the quest, with the agent and the quest as its first message.
-  send(q) {
-    const space = spaces().find((s) => s.id === this.space());
+  send(q, cx) {
+    const sp = this.space();
+    const space = spaces().find((s) => s.id === sp);
     const taken = new Set(space?.tabs.map((t) => t.name) ?? []);
     let name = q.text.length > 28 ? `${q.text.slice(0, 27)}…` : q.text;
     for (let n = 2; taken.has(name); n++) name = `${name.replace(/ #\d+$/, "")} #${n}`;
-    // In a WSL space the hero works in WSL, in the space's folder.
-    const dir = wslDir(shared, this.space());
-    run("tab.new", { name, space: this.space(), argv: dir ? wslArgv(dir, "claude") : AGENT, task: brief(q) });
-    this.update((l) => l.map((x) => (x.id === q.id ? { ...x, sent: { tab: null, name, worked: false } } : x)));
+    this.update((l) => l.map((x) => (x.id === q.id ? { ...x, sent: { tab: null, name, worked: false } } : x)), sp);
+    const dir = wslDir(shared, sp);
+    if (!dir) {
+      run("tab.new", { name, space: sp, argv: AGENT, task: brief(q) });
+      return;
+    }
+    // In a WSL space the hero works in WSL, in the space's folder. The quest goes in a file that
+    // guildhall-wsl/hero.sh reads: Herdr appends a task to the command line, which would break
+    // the quoting through cmd.exe and wsl.exe.
+    cx.spawn(async () => {
+      const file = `${appHome()}/mods/guildhall-quests/.sent/${q.id}-${Date.now()}.txt`;
+      await writeTextFile(file, brief(q), null);
+      run("tab.new", { name, space: sp, argv: wslHeroArgv(dir, file, appHome()) });
+    });
   }
 
   render() {
@@ -154,7 +165,7 @@ export default class Quests extends View {
           .when(!q.sent && !q.done, (el) => el.child(div().id(`quest-send-${q.id}`).flex_none().px(6).py(2).cursor_pointer()
             .bg(WOOD.rim).border(1).border_color(WOOD.outline).hover((s) => s.bg(WOOD.shine))
             .font_family(PX).text_size(11).text_color("#1b1420").tooltip("Open a new tab with an agent on this quest")
-            .on_click(() => this.send(q)).child("Send hero")))
+            .on_click((_e, cx) => this.send(q, cx)).child("Send hero")))
           .when(Boolean(q.sent), (el) => el.child(h_flex().id(`quest-hero-${q.id}`).flex_none().gap(2).items_center()
             .when(Boolean(a), (e) => e.cursor_pointer().on_click(() => run("pane.focus", { pane: a.pane })))
             .tooltip(a ? `On this quest: ${q.sent.name}` : q.done ? "Quest finished" : "The hero is on the way…")
