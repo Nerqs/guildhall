@@ -112,7 +112,7 @@ On Windows, Guildhall works with your WSL distro (the default one):
 - In a WSL space, the **NEW** button and **Ctrl+Shift+I** open WSL terminals in its folder, and the
   quest board sends heroes to work in WSL.
 - Agents in WSL fill the STAMINA, SESSION and LIFE bars too. That needs Claude Code installed in
-  WSL and the Linux status line from `extras/` (see `extras/README.md`).
+  WSL and the WSL status line `extras/guildhall-statusline-wsl.sh` (see `extras/README.md`).
 
 ## More
 
