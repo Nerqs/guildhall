@@ -21,7 +21,9 @@ export default class Themes extends View {
 
   render() {
     const t = theme();
-    const current = typeof layout()?.theme === "string" ? layout().theme : null;
+    // The theme in use, found by its colors (the theme picker keeps its choice apart from layout()).
+    const current = themes().find((x) => x.name.startsWith("guildhall") && x.colors.border === t.border
+      && x.colors.accent === t.accent && x.colors.chrome === t.chrome)?.name ?? null;
     const order = Object.keys(NAMES);
     const list = themes().filter((x) => x.name.startsWith("guildhall"))
       .sort((a, b) => (order.indexOf(a.name) + 1 || 99) - (order.indexOf(b.name) + 1 || 99));

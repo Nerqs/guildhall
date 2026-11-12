@@ -5,7 +5,7 @@
 
 import { View, div, image } from "gpui-kit";
 import { v_flex, h_flex } from "gpui-base";
-import { agents, spaces, focused, run, theme, shared, setShared, layout, openOverlay, nextCommand } from "herdr";
+import { agents, spaces, focused, run, theme, themes, shared, setShared, layout, openOverlay, nextCommand } from "herdr";
 
 const PX = "PxPlus IBM VGA 8x16";
 // The Ninja Adventure pack font (CC0) has no space glyph: only for one-word titles.
@@ -75,6 +75,21 @@ function resetsAt(s) {
   return `resets ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
 
+// The wood pieces in the shown theme's colors: ui/wood/<theme>/ (made by src/recolor.ps1) for the
+// guildhall-* themes, the pack's own orange wood (ui/wood/) for Wood and anything else.
+// The theme in use is found by its colors: Herdr's theme picker keeps its choice apart from the
+// layout file, so layout().theme can still say "guildhall" while another palette shows.
+function themeInUse() {
+  const t = theme();
+  return themes().find((x) => x.name.startsWith("guildhall") && x.colors.border === t.border
+    && x.colors.accent === t.accent && x.colors.chrome === t.chrome)?.name ?? null;
+}
+function woodArt(piece) {
+  const name = themeInUse();
+  const skin = name && name.startsWith("guildhall-") ? `${name}/` : "";
+  return `${ME}/ui/wood/${skin}${piece}.png`;
+}
+
 // A wood button from the Ninja Adventure "Theme Wood" (CC0), 112x40, with a pack icon and a label.
 // hover: the lighter plank; held: the pressed plank, nudged down a pixel.
 function woodButton(view, id, icon, label, action) {
@@ -84,10 +99,10 @@ function woodButton(view, id, icon, label, action) {
     .on_mouse_up("left", (_e, cx) => { view.pressed = null; cx.notify(); })
     .on_hover((on, cx) => { view.hovered = on ? id : view.hovered === id ? null : view.hovered; if (!on && view.pressed === id) view.pressed = null; cx.notify(); })
     .on_click(action)
-    .child(image(`${ME}/ui/wood/button-${state}.png`).absolute().top(0).left(0).w(112).h(40))
+    .child(image(woodArt(`button-${state}`)).absolute().top(0).left(0).w(112).h(40))
     .child(h_flex().absolute().top(state === "pressed" ? 5 : 4).left(6).h(32).gap(4).items_center()
       .child(image(`${ME}/ui/icons/${icon}.png`).w(32).h(32).flex_none())
-      .child(div().font_family(TITLE).text_size(13).text_color(state === "pressed" ? "#fff4e0" : "#3a1e10").child(label)));
+      .child(div().font_family(TITLE).text_size(13).text_color(state === "pressed" ? "#fff4e0" : theme().accent_foreground ?? "#3a1e10").child(label)));
 }
 
 // The town sign, centered on the window: a wood board from the pack with a flag on each side.
@@ -100,8 +115,8 @@ function townSign(name, chapter) {
   return h_flex().w(SIGN_W).h(64).items_center().justify_center().gap(4)
     .child(flag("l"))
     .child(div().relative().w(264).h(56).flex_none()
-      .child(image(`${ME}/ui/wood/sign.png`).absolute().top(0).left(0).w(264).h(56))
-      .child(image(`${ME}/ui/wood/sign-inset.png`).absolute().top(8).left(20).w(224).h(40))
+      .child(image(woodArt("sign")).absolute().top(0).left(0).w(264).h(56))
+      .child(image(woodArt("sign-inset")).absolute().top(8).left(20).w(224).h(40))
       .child(v_flex().absolute().top(8).left(20).w(224).h(40).items_center().justify_center()
         .child(div().max_w(210).truncate().font_family(PX).text_size(18).text_color("#fff4e0").child(name))
         .when(Boolean(chapter), (el) => el.child(div().font_family(PX).text_size(11).text_color("#ffd8a0").child(chapter)))))
