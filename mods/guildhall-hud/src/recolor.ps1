@@ -9,7 +9,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $mod = Split-Path -Parent $here
 $wood = Join-Path $mod "ui\wood"
 $themesDir = Join-Path (Split-Path -Parent (Split-Path -Parent $mod)) "themes"
-$pieces = "sign", "sign-inset", "button-normal", "button-hover", "button-pressed"
+$pieces = "sign", "sign-inset", "button-normal", "button-hover", "button-pressed", "button-sq-normal", "button-sq-hover", "button-sq-pressed"
 
 function Rgb($hex) { $c = [System.Drawing.ColorTranslator]::FromHtml($hex); return @($c.R, $c.G, $c.B) }
 function Lum($r, $g, $b) { return (0.2126 * $r + 0.7152 * $g + 0.0722 * $b) / 255 }

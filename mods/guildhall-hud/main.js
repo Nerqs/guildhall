@@ -106,6 +106,18 @@ function woodButton(view, id, icon, label, action) {
       .child(div().font_family(TITLE).text_size(13).text_color(state === "pressed" ? "#fff4e0" : theme().accent_foreground ?? "#3a1e10").child(label)));
 }
 
+// A square wood button with only an icon (40x40), for MIN; same states as woodButton.
+function iconButton(view, id, icon, tip, action) {
+  const state = view.pressed === id ? "pressed" : view.hovered === id ? "hover" : "normal";
+  return div().id(id).relative().w(40).h(40).flex_none().cursor_pointer().tooltip(tip)
+    .on_mouse_down("left", (_e, cx) => { cx.stop_propagation(); view.pressed = id; cx.notify(); })
+    .on_mouse_up("left", (_e, cx) => { view.pressed = null; cx.notify(); })
+    .on_hover((on, cx) => { view.hovered = on ? id : view.hovered === id ? null : view.hovered; if (!on && view.pressed === id) view.pressed = null; cx.notify(); })
+    .on_click(action)
+    .child(image(woodArt(`button-sq-${state}`)).absolute().top(0).left(0).w(40).h(40))
+    .child(image(`${ME}/ui/icons/${icon}.png`).absolute().top(state === "pressed" ? 5 : 4).left(4).w(32).h(32));
+}
+
 // The town sign, centered on the window: a wood board from the pack with a flag on each side.
 const SIGN_W = 264 + 2 * 36;
 function townSign(name, chapter) {
@@ -256,7 +268,7 @@ export default class Hud extends View {
       .child(woodButton(this, "btn-new", "Scroll", "NEW", () => newTab(false)))
       .child(woodButton(this, "btn-split", "Guard", "SPLIT", () => run("pane.split", { direction: "right" })))
       .child(woodButton(this, "btn-find", "Vision", "SEARCH", () => run("mod.open", { name: "picker" })))
-      .when(minButtonShown(), (el) => el.child(woodButton(this, "btn-min", "Downgrade", "MIN", () => run("window.minimize"))));
+      .when(minButtonShown(), (el) => el.child(iconButton(this, "btn-min", "Downgrade", "Minimize Herdr", () => run("window.minimize"))));
 
     // The sign sits at the window's center, not between the side blocks (they differ in width).
     const signLeft = Math.max(0, Math.round((this.width - SIGN_W) / 2));

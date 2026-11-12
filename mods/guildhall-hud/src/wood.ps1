@@ -53,6 +53,8 @@ function Frame($src, $dst, $i, $fw, $fh, $scale) {
 $W = Join-Path $ui "wood"
 # HUD buttons: 56x20 drawn 2x = 112x40, in three states.
 foreach ($s in "normal", "hover", "pressed") { Slice (Join-Path $wood "button_$s.png") (Join-Path $W "button-$s.png") 3 56 20 2 }
+# Square icon buttons (MIN): 20x20 drawn 2x = 40x40, in three states.
+foreach ($s in "normal", "hover", "pressed") { Slice (Join-Path $wood "button_$s.png") (Join-Path $W "button-sq-$s.png") 3 20 20 2 }
 # Label plates (LIFE, SESSION...): the selected tab piece, 34x10 drawn 2x.
 Slice (Join-Path $wood "tab_selected.png") (Join-Path $W "plate.png") 3 34 10 2
 # The town sign: the wood panel, 132x28 drawn 2x = 264x56, with an inset for the name.
