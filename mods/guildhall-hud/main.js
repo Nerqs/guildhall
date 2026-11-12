@@ -4,6 +4,7 @@
 // Right: round gem buttons with pixel item icons.
 
 import { View, div, image } from "gpui-kit";
+import { wslArgv, wslDir } from "./wsl.js";
 import { v_flex, h_flex } from "gpui-base";
 import { agents, spaces, focused, run, theme, themes, shared, setShared, layout, openOverlay, nextCommand } from "herdr";
 
@@ -153,7 +154,15 @@ function findNode(node, id) {
   for (const c of node?.children ?? []) { const f = findNode(c, id); if (f) return f; }
   return null;
 }
+// A new tab in the shown space: a WSL shell in its folder for a WSL space (or when asked), else Herdr's default.
+function newTab(wsl) {
+  const dir = wslDir(shared, focused()?.space);
+  if (dir || wsl) run("tab.new", { name: "WSL", argv: wslArgv(dir, null) });
+  else run("tab.new", {});
+}
+
 function hudCommand(c) {
+  if (c === "wsl-tab") { newTab(true); return; }
   if (c === "next-map") {
     const m = shared("guildhall.map");
     setShared("guildhall.map", MAPS[(MAPS.indexOf(m) + 1) % MAPS.length]);
@@ -228,7 +237,7 @@ export default class Hud extends View {
 
     const right = h_flex().gap(10).items_center().flex_none()
       .child(clock)
-      .child(woodButton(this, "btn-new", "Scroll", "NEW", () => run("tab.new", {})))
+      .child(woodButton(this, "btn-new", "Scroll", "NEW", () => newTab(false)))
       .child(woodButton(this, "btn-split", "Guard", "SPLIT", () => run("pane.split", { direction: "right" })))
       .child(woodButton(this, "btn-find", "Vision", "SEARCH", () => run("mod.open", { name: "picker" })));
 

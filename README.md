@@ -89,6 +89,8 @@ Herdr's own commands follow. Type to filter, then press Enter to run one.
 | Ctrl+Shift+Y | Show or hide the HUD |
 | Ctrl+Shift+B | Show or hide the side bar |
 | Ctrl+Shift+G | Pick the theme colors |
+| Ctrl+Shift+D | Open a WSL project |
+| Ctrl+Shift+I | New WSL tab here |
 
 ## Colors
 
@@ -98,6 +100,18 @@ Press **Ctrl+Shift+G**, or pick "Change the theme colors…" in the palette, to 
 colors: Wood (the default), Forest, Tokyo Night, Catppuccin, Dracula, Gruvbox, Nord or Rosé Pine.
 The frames, cards and panels take the palette's colors, and the sign and the buttons are recolored
 to match. The hearts stay red and the maps keep their own colors.
+
+## WSL
+
+On Windows, Guildhall works with your WSL distro (the default one):
+
+- **Ctrl+Shift+D** lists the folders in your Linux home. **Open** makes one a space with a WSL
+  shell in it, and **Hero** does the same with Claude Code running there. The MAP marks those spaces
+  "WSL".
+- In a WSL space, the **NEW** button and **Ctrl+Shift+I** open WSL terminals in its folder, and the
+  quest board sends heroes to work in WSL.
+- Agents in WSL fill the STAMINA, SESSION and LIFE bars too. That needs Claude Code installed in
+  WSL and the Linux status line from `extras/` (see `extras/README.md`).
 
 ## More
 

@@ -5,6 +5,7 @@
 import { View, div, image } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input, ScrollHandle } from "gpui-base";
 import { ROSTER } from "./roster.js";
+import { wslArgv, wslDir } from "./wsl.js";
 import {
   commands, layouts, keys, run, theme, props, closeOverlay, openOverlay, shared, setShared, focused, agents, layout,
 } from "herdr";
@@ -83,6 +84,12 @@ function guildhall() {
 
     { group: "Guildhall: Window", bind: "layout.toggle:sidebar", icon: "Vision", title: shown("sidebar") ? "Hide the side bar (map and party)" : "Show the side bar (map and party)",
       words: "sidebar left party spaces", act: () => run("layout.toggle", { id: "sidebar" }) },
+    { group: "Guildhall: WSL", bind: "mod.open:guildhall-wsl", icon: "Mine", title: "Open a WSL project…", words: "linux wsl arch folder space project",
+      act: () => openOverlay({ mod: "guildhall-wsl", kind: "dialog", width: 520, height: 440 }) },
+    { group: "Guildhall: WSL", bind: "guildhall-hud.wsl-tab", icon: "Helmet", title: "New WSL tab here", words: "linux wsl arch terminal shell",
+      act: () => run("tab.new", { name: "WSL", argv: wslArgv(wslDir(shared, focused()?.space), null) }) },
+    { group: "Guildhall: WSL", icon: "Interact", title: "Send a hero to work in WSL here", words: "linux wsl claude agent",
+      act: () => run("tab.new", { name: "Hero (WSL)", argv: wslArgv(wslDir(shared, focused()?.space), "claude") }) },
     { group: "Guildhall: Window", bind: "mod.open:guildhall-themes", icon: "OrbLight", title: "Change the theme colors…", words: "color palette wood forest tokyo catppuccin dracula gruvbox nord rose pine look",
       act: () => openOverlay({ mod: "guildhall-themes", kind: "dialog", width: 560, height: 430 }) },
     { group: "Guildhall: Window", bind: "layout.toggle:hud", icon: "Vision", title: shown("hud") ? "Hide the HUD" : "Show the HUD", words: "top bar hearts life session",

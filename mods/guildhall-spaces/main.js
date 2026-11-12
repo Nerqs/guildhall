@@ -451,6 +451,8 @@ export default class Spaces extends View {
           .when(!tree, el => el.child(div().flex_none().size(24).bg("#141b1b").border(1).border_color(fill).flex().items_center().justify_center()
             .child(image(`mods/guildhall-hud/ui/icons/${placeIcon(w.id)}.png`).w(16).h(16))))
           .child(div().flex_shrink(0).max_w(150).truncate().font_family(PX).text_size(14).text_color(on ? t.accent : t.foreground).child(placeName(w.name)))
+          .when(Boolean((shared("guildhall.wsl") ?? {})[w.id]), (el) => el.child(div().flex_none().px(3).bg("#131b1b").border(1).border_color(t.accent)
+            .font_family(PX).text_size(9).text_color(t.accent).child("WSL")))
           .child(g ? this.gitTail(g, tree, w.name, t) : div().flex_1()),
       );
   }

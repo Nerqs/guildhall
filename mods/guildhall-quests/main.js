@@ -10,6 +10,7 @@
 import { View, div, image } from "gpui-kit";
 import { v_flex, h_flex, InputState, Input } from "gpui-base";
 import { focused, spaces, agents, shared, setShared, theme, run } from "herdr";
+import { wslArgv, wslDir } from "./wsl.js";
 
 const PX = "PxPlus IBM VGA 8x16";
 const TITLE = "NinjaAdventure";
@@ -124,7 +125,9 @@ export default class Quests extends View {
     const taken = new Set(space?.tabs.map((t) => t.name) ?? []);
     let name = q.text.length > 28 ? `${q.text.slice(0, 27)}…` : q.text;
     for (let n = 2; taken.has(name); n++) name = `${name.replace(/ #\d+$/, "")} #${n}`;
-    run("tab.new", { name, space: this.space(), argv: AGENT, task: brief(q) });
+    // In a WSL space the hero works in WSL, in the space's folder.
+    const dir = wslDir(shared, this.space());
+    run("tab.new", { name, space: this.space(), argv: dir ? wslArgv(dir, "claude") : AGENT, task: brief(q) });
     this.update((l) => l.map((x) => (x.id === q.id ? { ...x, sent: { tab: null, name, worked: false } } : x)));
   }
 

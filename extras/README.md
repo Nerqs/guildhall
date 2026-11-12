@@ -25,3 +25,19 @@ The layout ships two sounds from the Ninja Adventure pack (CC0). To use them, ad
 ```json
 "sounds": { "enabled": true, "done": "mods/guildhall-hud/ui/sounds/done.wav", "blocked": "mods/guildhall-hud/ui/sounds/blocked.wav" }
 ```
+
+# Agents in WSL (Linux status line)
+
+For Claude Code running inside WSL, use `guildhall-statusline.sh`. It needs only bash, grep and sed. Set it up inside WSL:
+
+```sh
+cp guildhall-statusline.sh ~/.claude/ && chmod +x ~/.claude/guildhall-statusline.sh
+```
+
+Then add to `~/.claude/settings.json` in WSL:
+
+```json
+"statusLine": { "type": "command", "command": "bash ~/.claude/guildhall-statusline.sh", "refreshInterval": 30 }
+```
+
+It writes to the Windows user's `~/.guildhall/stamina/` through `/mnt/c`. Guildhall's WSL terminals pass Herdr's `HC_TERMINAL_ID` into WSL with `WSLENV=HC_TERMINAL_ID/u`.
