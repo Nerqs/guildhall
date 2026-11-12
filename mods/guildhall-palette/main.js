@@ -12,7 +12,15 @@ import {
 const PX = "PxPlus IBM VGA 8x16";
 const TITLE = "NinjaAdventure";
 const UI = "mods/guildhall-hud/ui";
-const WOOD = { outline: "#131b1b", rim: "#f06733", shine: "#ffad55", bevel: "#9b513c", fill: "#46402e" };
+// Wood colors come from the theme, so the theme picker recolors the frames:
+// rim = border, shine = accent, bevel = selected, fill = chrome; the outline stays dark.
+const WOOD = {
+  outline: "#131b1b",
+  get rim() { return theme().border; },
+  get shine() { return theme().accent; },
+  get bevel() { return theme().selected; },
+  get fill() { return theme().chrome; },
+};
 const MAPS = ["village", "camp", "snowfield", "shrine"];
 const HEROES = ["hunter", "princess", "knight", "sorcererblack", "oldman", "monk", "woman", "ninjagreen"];
 // Same pick as guildhall-agents: a hand pick, else the address hash.
@@ -75,6 +83,8 @@ function guildhall() {
 
     { group: "Guildhall: Window", bind: "layout.toggle:sidebar", icon: "Vision", title: shown("sidebar") ? "Hide the side bar (map and party)" : "Show the side bar (map and party)",
       words: "sidebar left party spaces", act: () => run("layout.toggle", { id: "sidebar" }) },
+    { group: "Guildhall: Window", bind: "mod.open:guildhall-themes", icon: "OrbLight", title: "Change the theme colors…", words: "color palette wood forest tokyo catppuccin dracula gruvbox nord rose pine look",
+      act: () => openOverlay({ mod: "guildhall-themes", kind: "dialog", width: 560, height: 430 }) },
     { group: "Guildhall: Window", bind: "layout.toggle:hud", icon: "Vision", title: shown("hud") ? "Hide the HUD" : "Show the HUD", words: "top bar hearts life session",
       act: () => run("layout.toggle", { id: "hud" }) },
   ];

@@ -75,7 +75,7 @@ export default class World extends View {
     const map = MAPS.includes(shared("guildhall.map")) ? shared("guildhall.map") : MAPS[0];
     const copies = Math.max(1, Math.ceil(this.width / STRIP_W));
     const next = () => setShared("guildhall.map", MAPS[(MAPS.indexOf(map) + 1) % MAPS.length]);
-    return div().id("world").relative().size_full().overflow_hidden().bg("#46402e")
+    return div().id("world").relative().size_full().overflow_hidden().bg(theme().chrome)
       .on_size_change((size, cx) => { if (size.width !== this.width) { this.width = size.width; cx.notify(); } })
       .children(Array.from({ length: copies }, (_, i) => image(`${ME}/maps/${map}.png`).absolute().top(0).left(i * STRIP_W).w(STRIP_W).h(STRIP_H)))
       // The campfire on the pit: two flame frames trading places.
@@ -84,9 +84,9 @@ export default class World extends View {
         .child(image(`${ME}/maps/fire1.png`).absolute().top(0).left(0).w(24).h(24).loop("opacity", { from: 0, to: 1, period: 360, easing: "linear" })))
       .children(list.map((a, i) => sprite(t, a, i)))
       .child(h_flex().id("map-plate").absolute().top(4).left(6).px(6).py(1).gap(6).items_center().cursor_pointer()
-        .bg("#131b1bdd").border(1).border_color("#f06733").hover((s) => s.border_color("#ffad55"))
+        .bg("#131b1bdd").border(1).border_color(theme().border).hover((s) => s.border_color(theme().accent))
         .tooltip("Change map").on_click(next)
-        .child(div().font_family(TITLE).text_size(12).text_color("#ffad55").child("MAP"))
+        .child(div().font_family(TITLE).text_size(12).text_color(theme().accent).child("MAP"))
         .child(div().font_family(PX).text_size(11).text_color("#fff4e0").child(map)));
   }
 }

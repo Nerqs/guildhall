@@ -125,8 +125,8 @@ function levelPlate(t, xp) {
   const into = max ? 1 : (xp - levelStart(lv)) / lv; // share of the way to the next level
   return h_flex().flex_none().gap(3).items_center()
     .tooltip(max ? `Level ${MAX_LEVEL} (max), ${xp} quests` : `${xp - levelStart(lv)}/${lv} quests to level ${lv + 1}`)
-    .child(div().px(3).bg("#131b1b").border(1).border_color(max ? "#f8b800" : "#ffad55")
-      .font_family(PX).text_size(10).text_color(max ? "#f8b800" : "#ffad55").child(max ? "Lv MAX" : `Lv ${lv}`))
+    .child(div().px(3).bg("#131b1b").border(1).border_color(max ? "#f8b800" : theme().accent)
+      .font_family(PX).text_size(10).text_color(max ? "#f8b800" : theme().accent).child(max ? "Lv MAX" : `Lv ${lv}`))
     .child(div().w(28).h(6).bg("#2a251c").border(1).border_color("#131b1b")
       .child(div().h_full().w(Math.round(26 * into)).bg(max ? "#f8b800" : "#78a8ff")));
 }
@@ -169,7 +169,15 @@ function emote(st, w) {
 }
 
 // The wood panel from the Ninja Adventure "Theme Wood" (CC0), rebuilt as layers so it scales.
-const WOOD = { outline: "#131b1b", rim: "#f06733", shine: "#ffad55", bevel: "#9b513c", fill: "#46402e" };
+// Wood colors come from the theme, so the theme picker recolors the frames:
+// rim = border, shine = accent, bevel = selected, fill = chrome; the outline stays dark.
+const WOOD = {
+  outline: "#131b1b",
+  get rim() { return theme().border; },
+  get shine() { return theme().accent; },
+  get bevel() { return theme().selected; },
+  get fill() { return theme().chrome; },
+};
 function woodLayers(rim = WOOD.rim) {
   const at = (n) => div().absolute().top(n).left(n).right(n).bottom(n);
   return [
@@ -525,7 +533,7 @@ export default class Agents extends View {
             .when(subs.length > 0, el => el.child(fold(a, subs)))
             .when(this.hovered === a.address, el => el.child(pin))
             .when(this.hovered !== a.address && Boolean(when), el => el.child(div().flex_none().font_family(PX).text_size(11).text_color(t.dim).child(duration(now - when)))))
-          .child(h_flex().gap(6).items_center().child(div().id(`pick-${a.address}`).border(1).border_color("#1b1420").cursor_pointer().hover((s) => s.border_color("#ffad55")).tooltip("Choose a hero")
+          .child(h_flex().gap(6).items_center().child(div().id(`pick-${a.address}`).border(1).border_color("#1b1420").cursor_pointer().hover((s) => s.border_color(theme().accent)).tooltip("Choose a hero")
             .on_click((_e, cx) => { cx.stop_propagation(); openOverlay({ mod: "guildhall-picker", kind: "dialog", width: 620, height: 520, props: { address: a.address } }); })
             .child(face(a.address, 26))).child(div().flex_1().min_w(0).truncate().font_family(PX).text_size(16).text_color(idle ? t.muted : t.foreground).child(name === "~" ? "Home" : name))
             .child(levelPlate(t, (shared("guildhall.xp") ?? {})[hero(a.address)] ?? 0)))

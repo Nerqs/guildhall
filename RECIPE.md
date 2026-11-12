@@ -94,3 +94,10 @@ An 8-bit adventure for your terminals. A pixel night forest sits behind everythi
 ## Credits
 
 Art, sounds and the NinjaAdventure font: Ninja Adventure Asset Pack by pixel-boy and AAA (CC0), https://pixel-boy.itch.io/ninja-adventure-asset-pack. PxPlus IBM VGA 8x16 font: VileR, int10h.org (CC BY-SA 4.0). Inspired by Pixelherd (jzetterman) and World of Codecraft (Kevin Pardo).
+
+## Theme colors
+
+- **Themes:** `themes/guildhall-*.json` holds seven more palettes besides `guildhall` (Wood): forest (the first green-and-gold look), tokyo, catppuccin, dracula, gruvbox, nord and rosepine.
+- **The picker:** `guildhall-themes` shows each `guildhall*` theme as a small framed card in its own colors. Clicking a card runs `app.theme {name}`. It opens with Ctrl+Shift+G or from the palette ("Change the theme colors…").
+- **Wood follows the theme:** every Guildhall mod reads the wood colors from the theme through getters. The rim is `border`, the shine `accent`, the bevel `selected` and the fill `chrome`, and the night HUD uses `canvas`. Only the outline stays `#131b1b`.
+- **Watch out:** the pack's images (sign, buttons, hearts, maps) keep their own colors.

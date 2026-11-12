@@ -11,7 +11,15 @@ const PX = "PxPlus IBM VGA 8x16";
 const HR = "mods/guildhall-agents/heroes";
 // Leveling, as in guildhall-agents: level N needs N quests to reach N+1, up to 100.
 const levelOf = (xp) => Math.min(100, Math.floor((1 + Math.sqrt(1 + 8 * Math.max(0, xp))) / 2));
-const WOOD = { outline: "#131b1b", rim: "#f06733", shine: "#ffad55", bevel: "#9b513c", fill: "#46402e" };
+// Wood colors come from the theme, so the theme picker recolors the frames:
+// rim = border, shine = accent, bevel = selected, fill = chrome; the outline stays dark.
+const WOOD = {
+  outline: "#131b1b",
+  get rim() { return theme().border; },
+  get shine() { return theme().accent; },
+  get bevel() { return theme().selected; },
+  get fill() { return theme().chrome; },
+};
 
 export default class Picker extends View {
   init() { this.hovered = null; }

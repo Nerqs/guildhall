@@ -88,6 +88,7 @@ Herdr's own commands follow. Type to filter, then press Enter to run one.
 | Ctrl+Shift+M | Next map |
 | Ctrl+Shift+Y | Show or hide the HUD |
 | Ctrl+Shift+B | Show or hide the side bar |
+| Ctrl+Shift+G | Pick the theme colors |
 
 ## More
 
@@ -97,6 +98,9 @@ Herdr's own commands follow. Type to filter, then press Enter to run one.
 - **Notifications:** they appear as RPG dialog boxes, with the agent's hero speaking.
 - **Tabs and panes:** tabs are quest plates, and each terminal header shows its hero and status.
 - **Sounds:** a fanfare when an agent finishes, an alert when one needs you, and a jingle on level up.
+- **Colors:** Ctrl+Shift+G opens a theme picker with Wood (the default), Forest, Tokyo Night,
+  Catppuccin, Dracula, Gruvbox, Nord and Rosé Pine. The wood frames, cards and panels take the colors
+  of the chosen palette.
 
 ## Install
 

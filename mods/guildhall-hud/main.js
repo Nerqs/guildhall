@@ -111,7 +111,15 @@ function townSign(name, chapter) {
 // The wood panel from the Ninja Adventure "Theme Wood" (CC0), rebuilt as layers so it scales:
 // dark outline, orange rim with a bright top edge, a red-brown bevel, then dark wood.
 // rim: the rim color (lighter when hovered or focused). Put these first, then the content.
-const WOOD = { outline: "#131b1b", rim: "#f06733", shine: "#ffad55", bevel: "#9b513c", fill: "#46402e" };
+// Wood colors come from the theme, so the theme picker recolors the frames:
+// rim = border, shine = accent, bevel = selected, fill = chrome; the outline stays dark.
+const WOOD = {
+  outline: "#131b1b",
+  get rim() { return theme().border; },
+  get shine() { return theme().accent; },
+  get bevel() { return theme().selected; },
+  get fill() { return theme().chrome; },
+};
 function woodLayers(rim = WOOD.rim, fill = WOOD.fill) {
   const at = (n) => div().absolute().top(n).left(n).right(n).bottom(n);
   return [
@@ -212,7 +220,7 @@ export default class Hud extends View {
     // The sign sits at the window's center, not between the side blocks (they differ in width).
     const signLeft = Math.max(0, Math.round((this.width - SIGN_W) / 2));
     return h_flex().id("hud").relative().size_full().pl(16).pr(20).gap(16).items_center()
-      .children(woodLayers(WOOD.rim, night ? "#2e2a22" : WOOD.fill))
+      .children(woodLayers(WOOD.rim, night ? theme().canvas : WOOD.fill))
       .on_size_change((size, cx) => { if (size.width !== this.width) { this.width = size.width; cx.notify(); } })
       .child(left)
       .child(div().flex_1())

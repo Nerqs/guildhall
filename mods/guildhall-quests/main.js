@@ -15,7 +15,15 @@ const PX = "PxPlus IBM VGA 8x16";
 const TITLE = "NinjaAdventure";
 const UI = "mods/guildhall-hud/ui";
 const HR = "mods/guildhall-agents/heroes";
-const WOOD = { outline: "#131b1b", rim: "#f06733", shine: "#ffad55", bevel: "#9b513c", fill: "#46402e" };
+// Wood colors come from the theme, so the theme picker recolors the frames:
+// rim = border, shine = accent, bevel = selected, fill = chrome; the outline stays dark.
+const WOOD = {
+  outline: "#131b1b",
+  get rim() { return theme().border; },
+  get shine() { return theme().accent; },
+  get bevel() { return theme().selected; },
+  get fill() { return theme().chrome; },
+};
 const HEROES = ["hunter", "princess", "knight", "sorcererblack", "oldman", "monk", "woman", "ninjagreen"];
 // The agent a quest is sent to.
 const AGENT = ["claude"];
