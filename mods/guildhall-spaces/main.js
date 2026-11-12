@@ -443,6 +443,8 @@ export default class Spaces extends View {
         cx.notify();
       })
       .on_mouse_down("right", () => this.menu(w))
+      // Middle click closes the space (Herdr asks first, as from the menu).
+      .on_mouse_down("middle", (_e, cx) => { cx.stop_propagation(); run("space.close", { id: w.id }); })
       .child(
         h_flex()
           .gap(9)

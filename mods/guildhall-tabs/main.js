@@ -86,6 +86,8 @@ export default class Tabs extends View {
           else run("tab.select", { id: c.id });
         })
         .on_mouse_down("right", (_e, cx) => { cx.stop_propagation(); openOverlay({ mod: "menu", kind: "popup", width: 200, props: { tab: "tab", target: { id: c.id, space: space.id } } }); })
+        // Middle click closes the tab (Herdr asks first when it is the space's last tab).
+        .on_mouse_down("middle", (_e, cx) => { cx.stop_propagation(); run("tab.close", { id: c.id }); })
         .child(lead?.terminal
           ? div().flex_none().border(1).border_color("#1b1420").child(image(`mods/guildhall-agents/heroes/${hero(lead.terminal)}/face.png`).w(20).h(20))
           : image("mods/guildhall-hud/ui/icons/Scroll.png").w(16).h(16).flex_none())

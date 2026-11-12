@@ -217,6 +217,24 @@ export default class Agents extends View {
     cx.timer.every(5000, (cx) => this.loadStamina(cx));
   }
 
+  // Middle click on a hero card: dismiss the hero, closing its pane (and its terminal).
+  // A hero that is working or waiting for you asks first, with Herdr's confirm dialog.
+  dismiss(a) {
+    const close = { name: "pane.close", args: { pane: a.pane } };
+    const busy = a.status === "working" || a.status === "blocked" || a.status === "error";
+    if (!busy) { run(close.name, close.args); return; }
+    const name = hero(a.address);
+    openOverlay({
+      mod: "confirm", kind: "dialog", width: 380, height: 170,
+      props: {
+        title: `Dismiss ${name.charAt(0).toUpperCase() + name.slice(1)}?`,
+        detail: a.status === "working" ? "This hero is still on a quest. Closing ends its terminal and stops the work."
+          : "This hero is waiting for you. Closing ends its terminal.",
+        command: close,
+      },
+    });
+  }
+
   loadStamina(cx) {
     cx.spawn(async (cx) => {
       let changed = false;
@@ -466,6 +484,7 @@ export default class Agents extends View {
           .gap(4)
           .hover((s) => s.bg(t.hover))
           .on_click(() => run("pane.focus", { pane: a.pane }))
+          .on_mouse_down("middle", (_e, cx) => { cx.stop_propagation(); this.dismiss(a); })
           .child(div().border(1).border_color("#1b1420").child(face(a.address, 34)))
           .child(h_flex().w(14).flex_none().items_center().justify_center().child(this.status(t, a, true)));
       }
@@ -516,6 +535,7 @@ export default class Agents extends View {
           cx.notify();
         })
         .on_click(() => run("pane.focus", { pane: a.pane }))
+        .on_mouse_down("middle", (_e, cx) => { cx.stop_propagation(); this.dismiss(a); })
         .child(div().id(`agent-fold-${a.address}`).relative().size(88).flex_none().border(2).border_color("#1b1420")
           .when(subs.length > 0, el => el.on_click((_e, cx) => {
             cx.stop_propagation();

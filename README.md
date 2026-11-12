@@ -91,6 +91,7 @@ Herdr's own commands follow. Type to filter, then press Enter to run one.
 | Ctrl+Shift+G | Pick the theme colors |
 | Ctrl+Shift+D | Open a WSL project |
 | Ctrl+Shift+I | New WSL tab here |
+| Middle click | Close a tab, a space on the MAP, or dismiss a hero (asks first when needed) |
 
 ## Colors
 

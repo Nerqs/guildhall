@@ -109,3 +109,9 @@ Art, sounds and the NinjaAdventure font: Ninja Adventure Asset Pack by pixel-boy
 - **WSL spaces:** in a WSL space, the HUD's NEW button (and `guildhall-hud.wsl-tab`, Ctrl+Shift+I) opens `wslArgv(dir)`. The quest board's Send hero writes the quest to `guildhall-quests/.sent/<id>-<time>.txt` and opens `wslHeroArgv(dir, file, appHome())`, which runs `guildhall-wsl/hero.sh <file>`. That script starts `claude "$(cat file)"` and then leaves a shell. A `task` can't be used here: Herdr appends it to the command line, and that breaks the quoting through cmd.exe and wsl.exe. The HUD forgets closed WSL spaces every minute. The MAP shows a "WSL" plate. The palette has a WSL group: open a project, new WSL tab, send a hero to WSL.
 - **Stamina in WSL:** `extras/guildhall-statusline.sh` is the Linux status line. It parses JSON with grep and sed (`remaining_percentage` is read from the whole payload, because `context_window` holds a nested object) and writes `$WINDOWS_HOME/.guildhall/stamina/<HC_TERMINAL_ID>.json` through `/mnt/c`.
 - **Watch out:** on Windows, Herdr starts `argv` through the user's PowerShell, so `hc ls` shows the terminal as `pwsh.exe`. The command still runs. The first call into a stopped distro can take several seconds.
+
+## Middle click
+
+- **On a tab** (`guildhall-tabs`): `tab.close {id}`. It is not confirmed, so Herdr asks first when the tab is its space's last.
+- **On a MAP place** (`guildhall-spaces`): `space.close {id}`. It is not confirmed, so Herdr asks first, as it does from the menu.
+- **On a PARTY card or the rail** (`guildhall-agents`): dismisses the hero with `pane.close {pane}`, which ends its terminal. A working, blocked or erroring hero first opens Herdr's `confirm` dialog ({ title, detail, command }); an idle one closes at once.
