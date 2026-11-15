@@ -475,18 +475,26 @@ export default class Agents extends View {
       // An agent on another machine (`vps/t7`) says which.
       const machine = a.address.includes("/") ? a.address.split("/")[0] : null;
       if (collapsed) {
+        // The rail: only the hero's square, the hero moving inside it (walking while working,
+        // arms up when it needs you or is done, breathing at rest); the frame takes the status color.
+        const ring = a.status === "blocked" || a.status === "error" ? t.blocked : a.status === "done" ? t.done : a.status === "working" ? t.working : "#1b1420";
+        let frame = div().relative().size(48).flex_none().bg("#141b1b").border(2).border_color(ring)
+          .flex().items_end().justify_center().overflow_hidden()
+          .child(div().mb(3).child(avatar(t, a.address, a.status, 36)));
+        if (a.status === "blocked" || a.status === "error") frame = frame.loop("opacity", { from: 1, to: 0.55, period: 700 });
         return h_flex()
           .id(`ag-${a.address}`)
-          .h(44)
-          .px(4)
+          .h(56)
           .flex_none()
           .items_center()
-          .gap(4)
+          .justify_center()
+          .rounded(2)
+          .when(a.focused, (el) => el.bg(t.selected))
           .hover((s) => s.bg(t.hover))
+          .tooltip(`${a.program?.name ?? "Agent"} · ${(BADGE[a.status] ?? a.status ?? "").toLowerCase()}`)
           .on_click(() => run("pane.focus", { pane: a.pane }))
           .on_mouse_down("middle", (_e, cx) => { cx.stop_propagation(); this.dismiss(a); })
-          .child(div().border(1).border_color("#1b1420").child(face(a.address, 34)))
-          .child(h_flex().w(14).flex_none().items_center().justify_center().child(this.status(t, a, true)));
+          .child(frame);
       }
       const when = this.since(a);
       const idle = a.status === "idle" && !a.focused;
@@ -637,23 +645,9 @@ export default class Agents extends View {
       .when(list.length === 0 && !collapsed, (el) =>
         el.child(div().px(12).text_size(12).text_color(t.dim).child("No agent status yet. Agents show up here when they report their status. Older versions and agents inside tmux may not.")),
       )
-      .child(v_flex().id("ag-list").flex_1().min_h(0).px(collapsed ? 0 : 8).overflow_y_scrollbar().mode("always").children(rows))
-      .when(collapsed, (el) =>
-        el.child(
-          h_flex()
-            .h(28)
-            .items_center()
-            .justify_center()
-            .child(
-              div()
-                .id("collapse")
-                .text_size(13)
-                .text_color(t.dim)
-                .hover((s) => s.text_color(t.foreground))
-                .on_click(toggleSidebar)
-                .child("»"),
-            ),
-        ),
-      );
+      // In the rail, a PARTY crest stands in for the title; guildhall-fold's button (under Add machine) widens it again.
+      .when(collapsed, (el) => el.child(h_flex().h(30).pt(6).flex_none().justify_center()
+        .child(image("mods/guildhall-hud/ui/icons/Helmet.png").w(20).h(20).opacity(0.85))))
+      .child(v_flex().id("ag-list").flex_1().min_h(0).px(collapsed ? 0 : 8).pt(collapsed ? 4 : 0).gap(collapsed ? 2 : 0).overflow_y_scrollbar().mode("always").children(rows));
   }
 }

@@ -16,6 +16,7 @@ on a map, and a wood-framed HUD shows your Claude limits as hearts and a session
 - **Town sign:** sits in the middle of the window and shows the space and the current tab ("chapter").
 - **Clock:** the sun or the moon, with the time. The wood darkens at night.
 - **Buttons:** NEW (new tab), SPLIT, SEARCH and a minimize button (an arrow icon). MIN can be turned off from the palette ("Hide the minimize button"). It starts hidden on Linux, where many window managers can't minimize.
+- **Compact mode:** a half-size wood button (▲) at the HUD's bottom right folds it into one thin row: small hearts with the weekly % beside them, a thin session bar, icon-only buttons and no sign. A ◄ button under Add machine folds the side bar into a rail: place icons, each hero walking inside its square (the frame takes the status color) and footer icons. Keys `ctrl-shift-a` (HUD) and `ctrl-shift-s` (side bar), or the palette.
 
 ## The party
 

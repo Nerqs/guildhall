@@ -36,7 +36,7 @@ function placeIcon(id) {
   return PLACES[h % PLACES.length];
 }
 const placeName = (name) => (name === "~" ? "Home" : name);
-const RAIL_CELL = 32;
+const RAIL_CELL = 48;
 const railCell = (el) => h_flex().flex_none().justify_center().child(el);
 const where = (s, ps) => JSON.stringify([s.machine ?? null, place(s, ps)]);
 const base = (path) => path.replace(/\/+$/, "").split("/").pop();
@@ -459,20 +459,30 @@ export default class Spaces extends View {
       );
   }
 
+  // The rail: each place's icon in its colored frame (as in the full row), the status dot at its corner.
   compact({ w, i }, t) {
+    const colors = shared("space.colors") ?? {};
+    const color = colors[w.id] ?? "ansi6";
+    const fill = color.startsWith("#") ? color : (MARK[color] ?? t[color]);
+    const dot = glyph(w.status);
     return railCell(h_flex()
       .id(`space-${w.id}`)
       .relative()
       .w(RAIL_CELL)
-      .h(26)
-      .rounded(6)
+      .h(36)
+      .rounded(2)
       .justify_center()
       .items_center()
+      .tooltip(`${i + 1}. ${placeName(w.name)}`)
+      .border_l(3)
+      .border_color(w.active ? t.accent : "#00000000")
       .when(w.active, (el) => el.bg(t.selected))
       .when(!w.active, (el) => el.hover((s) => s.bg(t.hover)))
       .on_click(() => run("space.select", { id: w.id }))
-      .child(div().text_color(w.active ? t.foreground : t.muted).child(String(i + 1)))
-      .child(div().absolute().right(5).text_color(tone(t, w.status)).child(glyph(w.status))));
+      .on_mouse_down("right", () => this.menu(w))
+      .child(div().flex_none().size(28).bg("#141b1b").border(1).border_color(fill).flex().items_center().justify_center()
+        .child(image(`mods/guildhall-hud/ui/icons/${placeIcon(w.id)}.png`).w(20).h(20)))
+      .when(dot !== "·", (el) => el.child(div().absolute().top(0).right(3).text_color(tone(t, w.status)).child(dot))));
   }
 
   render() {

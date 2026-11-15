@@ -55,6 +55,16 @@
               "size": {
                 "px": 69
               }
+            },
+            {
+              "id": "sidebar-fold",
+              "type": "block",
+              "content": {
+                "mod": "guildhall-fold"
+              },
+              "size": {
+                "px": 26
+              }
             }
           ],
           "size": {

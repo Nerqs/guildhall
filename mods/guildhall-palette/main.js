@@ -99,6 +99,19 @@ function guildhall() {
       act: () => setShared("guildhall.minButton", !minShown()) },
     { group: "Guildhall: Window", bind: "layout.toggle:hud", icon: "Vision", title: shown("hud") ? "Hide the HUD" : "Show the HUD", words: "top bar hearts life session",
       act: () => run("layout.toggle", { id: "hud" }) },
+    // The same toggles as the HUD's and the side bar's small fold buttons (guildhall-hud, guildhall-fold).
+    { group: "Guildhall: Window", bind: "guildhall-hud.compact-hud", icon: "Counter", title: shared("guildhall.compactHud") === true ? "Full HUD" : "Compact HUD (icons only)",
+      words: "top bar small thin reduce fold icons", act: () => {
+        const next = shared("guildhall.compactHud") !== true;
+        setShared("guildhall.compactHud", next);
+        run("layout.resize", { id: "hud", px: next ? 40 : 68 });
+      } },
+    { group: "Guildhall: Window", bind: "guildhall-hud.compact-sidebar", icon: "Counter", title: (find(layout(), "sidebar")?.size?.px ?? 280) < 160 ? "Widen the side bar" : "Narrow the side bar to icons",
+      words: "sidebar left rail small reduce fold icons party map", act: () => {
+        const px = find(layout(), "sidebar")?.size?.px ?? 280;
+        if (px >= 160) { setShared("sidebar.width", px); run("layout.resize", { id: "sidebar", px: 64 }); }
+        else run("layout.resize", { id: "sidebar", px: Math.max(160, shared("sidebar.width") ?? 280) });
+      } },
   ];
   return list.filter((e) => e.when !== null && e.when !== undefined ? Boolean(e.when) : !("when" in e) || Boolean(e.when));
 }
