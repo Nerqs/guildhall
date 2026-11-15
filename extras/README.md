@@ -73,3 +73,18 @@ Then add to `~/.claude/settings.json` in WSL:
 ```
 
 It writes to the Windows user's `~/.guildhall/stamina/` through `/mnt/c`. Guildhall's WSL terminals pass Herdr's `HC_TERMINAL_ID` into WSL with `WSLENV=HC_TERMINAL_ID/u`.
+
+# Files and Changes: where each terminal is
+
+Herdr only knows the folder a terminal started in, so Guildhall's Files and Changes panels read a
+tiny file each shell keeps current: `~/.guildhall/cwd/<terminal>`. Install the prompt hooks once,
+from PowerShell in this repo:
+
+```powershell
+pwsh -File extras/install-cwd-hooks.ps1            # PowerShell profile + the default WSL distro
+pwsh -File extras/install-cwd-hooks.ps1 -NoWsl     # PowerShell only
+```
+
+It backs up `$PROFILE` and `~/.bashrc` before adding one line to each. Open a new terminal (or
+reload the profile) afterwards. For WSL files, the Edit action uses nvim when it's installed
+(Arch: `sudo pacman -S neovim`).

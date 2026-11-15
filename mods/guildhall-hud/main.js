@@ -4,9 +4,9 @@
 // Right: round gem buttons with pixel item icons.
 
 import { View, div, image } from "gpui-kit";
-import { wslArgv, wslDir } from "./wsl.js";
+import { newTabHere } from "./wsl.js";
 import { v_flex, h_flex } from "gpui-base";
-import { agents, spaces, focused, run, theme, themes, shared, setShared, layout, openOverlay, nextCommand, window as win } from "herdr";
+import { agents, spaces, panes, home, focused, run, theme, themes, shared, setShared, layout, openOverlay, nextCommand, window as win } from "herdr";
 
 const PX = "PxPlus IBM VGA 8x16";
 // The Ninja Adventure pack font (CC0) has no space glyph: only for one-word titles.
@@ -193,11 +193,10 @@ function findNode(node, id) {
   for (const c of node?.children ?? []) { const f = findNode(c, id); if (f) return f; }
   return null;
 }
-// A new tab in the shown space: a WSL shell in its folder for a WSL space (or when asked), else Herdr's default.
-function newTab(wsl) {
-  const dir = wslDir(shared, focused()?.space);
-  if (dir || wsl) run("tab.new", { name: "WSL", argv: wslArgv(dir, null) });
-  else run("tab.new", {});
+// A new tab where the focused terminal is: WSL when it's in WSL (or when asked), in its folder (wsl.js).
+const HERDR = { focused, panes, home, shared, run };
+function newTab(wsl, cx) {
+  cx.spawn(async () => { await newTabHere(HERDR, wsl); });
 }
 
 // The MIN button (minimizes Herdr) can be turned off from the palette: shared "guildhall.minButton".
@@ -215,8 +214,9 @@ function pruneWsl() {
   if (Object.keys(keep).length !== Object.keys(map).length) setShared("guildhall.wsl", keep);
 }
 
-function hudCommand(c) {
-  if (c === "wsl-tab") { newTab(true); return; }
+function hudCommand(c, cx) {
+  if (c === "wsl-tab") { newTab(true, cx); return; }
+  if (c === "new-tab") { newTab(false, cx); return; }
   if (c === "compact-hud") { toggleHudCompact(); return; }
   if (c === "compact-sidebar") { toggleSidebarRail(); return; }
   if (c === "next-map") {
@@ -251,7 +251,7 @@ export default class Hud extends View {
     cx.spawn(async (cx) => {
       for (;;) {
         const c = await nextCommand();
-        hudCommand(c);
+        hudCommand(c, cx);
         cx.notify();
       }
     });
@@ -292,7 +292,7 @@ export default class Hud extends View {
         .when(needs > 0, (el) => el.child(div().ml(10).child(plate(`!${needs}`, t.blocked).loop("opacity", { from: 1, to: 0.3, period: 600 }))));
       const right = h_flex().gap(6).items_center().flex_none()
         .child(div().id("clock").mr(4).tooltip(`${night ? "Night" : "Day"} ${time}`).child(sunMoon(20)))
-        .child(iconButton(this, "btn-new", "Scroll", "New tab", () => newTab(false), 28))
+        .child(iconButton(this, "btn-new", "Scroll", "New tab", (_e, cx) => newTab(false, cx), 28))
         .child(iconButton(this, "btn-split", "Guard", "Split right", () => run("pane.split", { direction: "right" }), 28))
         .child(iconButton(this, "btn-find", "Vision", "Search", () => run("mod.open", { name: "picker" }), 28))
         .when(minButtonShown(), (el) => el.child(iconButton(this, "btn-min", "Downgrade", "Minimize Herdr", () => run("window.minimize"), 28)))
@@ -324,7 +324,7 @@ export default class Hud extends View {
 
     const right = h_flex().gap(10).items_center().flex_none()
       .child(clock)
-      .child(woodButton(this, "btn-new", "Scroll", "NEW", () => newTab(false)))
+      .child(woodButton(this, "btn-new", "Scroll", "NEW", (_e, cx) => newTab(false, cx)))
       .child(woodButton(this, "btn-split", "Guard", "SPLIT", () => run("pane.split", { direction: "right" })))
       .child(woodButton(this, "btn-find", "Vision", "SEARCH", () => run("mod.open", { name: "picker" })))
       .when(minButtonShown(), (el) => el.child(iconButton(this, "btn-min", "Downgrade", "Minimize Herdr", () => run("window.minimize"))))

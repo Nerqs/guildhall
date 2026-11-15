@@ -40,7 +40,7 @@ An 8-bit adventure for your terminals. A pixel night forest sits behind everythi
 - `guildhall-agents`: a `mod.clone` of the shipped `agents`. Its `avatar()` is replaced, it uses bigger rows and pixel-font headers. Sprites are generated from `avatar/src/*.txt` (a palette line, then 16 rows of 16 characters) by `sh avatar/src/build.sh`.
 - `guildhall-hud`: uses `agents()`, `spaces()`, `focused()`, `run()`. It has no timers; all animation is `.loop()`.
 - `guildhall-toast`: `props()` and `closeOverlay()`.
-- Shipped mods: `spaces`, `tabs`, `pane`, `files`, `changes`, `workspace-status`, `workspace-chrome` (footer), `picker`.
+- Shipped mods: `spaces`, `tabs`, `pane`, `workspace-status`, `workspace-chrome` (footer), `picker`.
 
 **Watch out**
 
@@ -104,11 +104,23 @@ Art, sounds and the NinjaAdventure font: Ninja Adventure Asset Pack by pixel-boy
 
 ## WSL
 
-- **Starting WSL terminals:** `guildhall-wsl/wsl.js` exports `wslArgv(dir, command)`, which returns `["cmd.exe", "/c", "set WSLENV=HC_TERMINAL_ID/u&& wsl.exe --cd \"<dir>\" [-e bash -lic \"<command>; exec bash -li\"]"]`. It uses the default distro. WSLENV passes Herdr's terminal id into WSL, and the login-interactive bash loads `~/.bashrc`, which puts `~/.local/bin` (where Claude Code installs) on PATH. `guildhall-hud`, `guildhall-quests` and `guildhall-palette` carry the same copy.
+- **Starting WSL terminals:** `guildhall-wsl/wsl.js` exports `wslArgv(dir, command)`, which returns `["cmd.exe", "/c", "set WSLENV=HC_TERMINAL_ID/u:USERPROFILE/pu&& wsl.exe --cd \"<dir>\" [-e bash -lic \"<command>; exec bash -li\"]"]`. It uses the default distro. WSLENV passes Herdr's terminal id into WSL, and the login-interactive bash loads `~/.bashrc`, which puts `~/.local/bin` (where Claude Code installs) on PATH. `guildhall-hud`, `guildhall-quests` and `guildhall-palette` carry the same copy.
 - **The projects window:** `guildhall-wsl` runs `wsl.exe -e sh -c` to list `$HOME` and its folders. Open and Hero run `space.new { name, argv }`. The window stays open until the new space appears, because closing would end its task, and then records it in shared `guildhall.wsl` ({ spaceId: dir }).
 - **WSL spaces:** in a WSL space, the HUD's NEW button (and `guildhall-hud.wsl-tab`, Ctrl+Shift+I) opens `wslArgv(dir)`. The quest board's Send hero writes the quest to `guildhall-quests/.sent/<id>-<time>.txt` and opens `wslHeroArgv(dir, file, appHome())`, which runs `guildhall-wsl/hero.sh <file>`. That script starts `claude "$(cat file)"` and then leaves a shell. A `task` can't be used here: Herdr appends it to the command line, and that breaks the quoting through cmd.exe and wsl.exe. The HUD forgets closed WSL spaces every minute. The MAP shows a "WSL" plate. The palette has a WSL group: open a project, new WSL tab, send a hero to WSL.
 - **Stamina in WSL:** `extras/guildhall-statusline-wsl.sh` is the Linux status line. It parses JSON with grep and sed (`remaining_percentage` is read from the whole payload, because `context_window` holds a nested object) and writes `$WINDOWS_HOME/.guildhall/stamina/<HC_TERMINAL_ID>.json` through `/mnt/c`.
 - **Watch out:** on Windows, Herdr starts `argv` through the user's PowerShell, so `hc ls` shows the terminal as `pwsh.exe`. The command still runs. The first call into a stopped distro can take several seconds.
+
+
+## Files and Changes (cloned)
+
+- **Clones:** `guildhall-files` and `guildhall-changes` are `mod.clone`s of the shipped `files` and `changes`; the layout's `files`/`changes` blocks point at them (same ids, so the tab bar's buttons work). Both carry the same `place.js`.
+- **Where the terminal is:** Herdr's `panes()[i].cwd` is the process folder, which PowerShell's `cd` and anything inside `wsl.exe` never move. Prompt hooks write `~/.guildhall/cwd/<HC_TERMINAL_ID>` (line 1: `$WSL_DISTRO_NAME` or empty, line 2: the folder) when the folder changes: `extras/guildhall-cwd.ps1` wraps `prompt` (dot-sourced last in `$PROFILE`), `extras/guildhall-cwd.sh` prepends to `PROMPT_COMMAND`. `place.js` reads them with `fs/promises` every 2s (`watchFolder` missed rewrites) and deletes the ones of ended terminals at start. Without a beacon, a WSL space (shared `guildhall.wsl`) uses its project folder in the default distro (`$WSL_DISTRO_NAME` asked once); anything else uses Herdr's cwd.
+- **Running there:** `execAt(place, cmd, args, {cwd})` is `exec` locally, or `wsl.exe -d <distro> --cd <cwd> --exec <cmd> ...` for WSL (git, the `sh` folder lister, `head -c 2000000` for previews). WSL folders refresh on the 10s timer only.
+- **Opening:** `openFile(place, path, "edit" | "open" | "auto")`. Windows runs `guildhall-files/open.ps1`: `ShellExecuteEx` with `lpClass = ".txt"` for edit (the person's default text editor for any extension), with no class for open (OpenAs dialog when nothing is associated), `explorer /select` for reveal. `exe msi bat cmd ps1 js vbs lnk ...` are revealed, never opened. WSL files reach Windows as `\wsl.localhost\<distro>\...`; WSL edit is `pane.split right` with `wsl.exe --exec bash -lc` trying nvim, `$EDITOR`, vim, nano, vi. "auto" picks open for a media/document/archive extension list, edit otherwise.
+- **Images and new files:** Files previews png/jpg/gif/webp/bmp/ico/svg by copying them with `preview.ps1` into `mods/guildhall-files/.preview/p<n>.<ext>` (`image()` only reads Herdr's folder; a new name each time; the script prints the pixel size, which sets the drawn size: the panel width, at most 4x). + File / + Folder use an `InputState`; Windows creates with `New-Item` after `Test-Path` (never replaces), WSL with `sh` (`mkdir -p`, `: >`); a new file then opens with "edit".
+- **Branch bar (Changes):** refresh also reads `symbolic-ref --short HEAD` and `rev-list --left-right --count HEAD...@{upstream}`. The list is `for-each-ref --sort=-committerdate refs/heads refs/remotes` (remote ones without a local branch, minus `*/HEAD`). Actions: `switch`, `switch -c`, `switch --track`, `pull --ff-only`, `push` (or `push -u origin <branch>` without an upstream), `fetch --all --prune`, 120s timeout; git's error (last 3 lines) shows as the note.
+- **New tabs where you are:** `wsl.js` `here()` reads the focused terminal's beacon, `newTabHere()` opens `wslArgv(dir)` when it is WSL (or a WSL space without a beacon) and `tab.new {folder}` otherwise. The HUD's NEW and `guildhall-hud.new-tab` (bound to ctrl-shift-t in `layout:guildhall`) use it; `guildhall-new-menu` (a clone of `new-menu`, opened by the tab bar's +) reads it in `init` and acts synchronously, because closing the popup ends its tasks.
+- **WSLENV:** `wslArgv` passes `HC_TERMINAL_ID/u:USERPROFILE/pu`, so the bash hook finds the Windows home without calling `cmd.exe`.
 
 ## Middle click
 

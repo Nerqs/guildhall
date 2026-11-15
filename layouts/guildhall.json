@@ -146,14 +146,14 @@
                           "id": "files",
                           "type": "block",
                           "content": {
-                            "mod": "files"
+                            "mod": "guildhall-files"
                           }
                         },
                         {
                           "id": "changes",
                           "type": "block",
                           "content": {
-                            "mod": "changes"
+                            "mod": "guildhall-changes"
                           }
                         },
                         {

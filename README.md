@@ -110,10 +110,36 @@ On Windows, Guildhall works with your WSL distro (the default one):
 - **Ctrl+Shift+D** lists the folders in your Linux home. **Open** makes one a space with a WSL
   shell in it, and **Hero** does the same with Claude Code running there. The MAP marks those spaces
   "WSL".
-- In a WSL space, the **NEW** button and **Ctrl+Shift+I** open WSL terminals in its folder, and the
-  quest board sends heroes to work in WSL.
+- New tabs open where you are: **NEW**, **Ctrl+Shift+T** and the tab bar's **+** → **Terminal** open WSL when
+  the focused terminal is in WSL (in its folder), and Windows otherwise. The **+** menu also has
+  **WSL terminal**, **Windows terminal** and **Claude Code (WSL)**. **Ctrl+Shift+I** always opens WSL.
+- The quest board sends heroes to work in WSL.
 - Agents in WSL fill the STAMINA, SESSION and LIFE bars too. That needs Claude Code installed in
   WSL and the WSL status line `extras/guildhall-statusline-wsl.sh` (see `extras/README.md`).
+
+
+## Files and Changes
+
+The **Files** and **Changes** panels (the buttons in the tab bar) follow the folder the focused
+terminal is in now, after every `cd`, in Windows and in WSL alike. A **WSL** badge marks a
+Linux folder, and git runs inside WSL there.
+
+- **Click** a file to preview it: text, or an image (PNG, JPG, GIF, WebP, SVG...) fitted to the
+  panel. PDFs, spreadsheets (CSV too), documents, audio, video and archives open in their own
+  Windows program instead.
+- **Right-click** a file (in Files or Changes) to work on it: text opens in **Windows' default text
+  editor** (whatever opens `.txt`), or, for a WSL file, in **nvim** in a split beside the terminal
+  (then `$EDITOR`, vim, nano, vi). Media opens in its program, WSL files too.
+- In a preview, **Edit** and **Open** do the same on purpose. Programs and scripts are never run:
+  Open shows them in Explorer.
+- **+ File** and **+ Folder** create one in the folder shown (`src/new.ts` makes `src` too); a new
+  file opens in the editor.
+- Changes has a **branch bar**: the branch, ↑/↓ against its upstream, and Fetch, Pull (fast-forward
+  only) and Push (it sets the upstream the first time). Click the branch to switch to another, check
+  out a remote one, or create a new branch from here.
+
+This needs a small prompt hook in each shell, because Herdr only sees the folder a terminal started
+in. Run `pwsh -File extras/install-cwd-hooks.ps1` once (see `extras/README.md`).
 
 ## More
 
