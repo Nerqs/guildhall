@@ -92,6 +92,7 @@ Herdr's own commands follow. Type to filter, then press Enter to run one.
 | Ctrl+Shift+G | Pick the theme colors |
 | Ctrl+Shift+D | Open a WSL project |
 | Ctrl+Shift+I | New WSL tab here |
+| Ctrl+Shift+R | Update Guildhall from GitHub |
 | Middle click | Close a tab, a space on the MAP, or dismiss a hero (asks first when needed) |
 
 ## Colors
@@ -155,6 +156,29 @@ in. Run `pwsh -File extras/install-cwd-hooks.ps1` once (see `extras/README.md`).
 Ask your agent to add this layout from `herdr.dev/layouts`, or copy `layouts/`, `themes/` and `mods/`
 into `~/.config/herdr-app/`. Then merge `keys.json` into yours and run
 `herdr-app do layout.switch '{"name":"guildhall"}'`.
+
+## Update
+
+Press **Ctrl+Shift+R**, or pick "Update Guildhall…" in the palette. The window compares the
+installed version with the latest one on GitHub, and **Update** downloads it and copies the
+layout, themes and mods into Herdr's folder. Herdr reloads them by itself, with no restart.
+Before changing anything it saves a backup in `data/guildhall-update/backups/` (the last 10).
+`keys.json` only gains the new keys; a key you already use is never replaced.
+
+The same updater runs from a terminal. Add `-n` (`-DryRun` on Windows) to only see what would change:
+
+```sh
+# Linux and macOS
+bash ~/.config/herdr-app/mods/guildhall-update/update.sh
+```
+
+```powershell
+# Windows (use the folder of your Herdr install)
+powershell -ExecutionPolicy Bypass -File "$HOME\.config\herdr-app\mods\guildhall-update\update.ps1"
+```
+
+It needs `curl` or `wget` and `tar` on Linux and macOS (and `python3` to merge `keys.json`);
+Windows PowerShell 5.1 or later on Windows. Nothing else, not even Git.
 
 The LIFE hearts and the SESSION and STAMINA bars read Claude's limits through a Claude Code status
 line, which lives in `extras/`. `extras/README.md` shows how to set it up and how to turn on the

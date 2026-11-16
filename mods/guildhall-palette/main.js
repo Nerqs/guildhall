@@ -95,6 +95,8 @@ function guildhall() {
       act: () => run("tab.new", { name: "Hero (WSL)", argv: wslArgv(wslDir(shared, focused()?.space), "claude") }) },
     { group: "Guildhall: Window", bind: "mod.open:guildhall-themes", icon: "OrbLight", title: "Change the theme colors…", words: "color palette wood forest tokyo catppuccin dracula gruvbox nord rose pine look",
       act: () => openOverlay({ mod: "guildhall-themes", kind: "dialog", width: 560, height: 430 }) },
+    { group: "Guildhall: Window", bind: "mod.open:guildhall-update", icon: "Upgrade", title: "Update Guildhall…", words: "update upgrade download github new version install",
+      act: () => openOverlay({ mod: "guildhall-update", kind: "dialog", width: 600, height: 460 }) },
     { group: "Guildhall: Window", icon: "Downgrade", title: minShown() ? "Hide the minimize button" : "Show the minimize button", words: "min minimize window hud button",
       act: () => setShared("guildhall.minButton", !minShown()) },
     { group: "Guildhall: Window", bind: "layout.toggle:hud", icon: "Vision", title: shown("hud") ? "Hide the HUD" : "Show the HUD", words: "top bar hearts life session",
